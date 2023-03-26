@@ -1,0 +1,114 @@
+
+<header>
+	<h1>Angular blog</h1>
+	<div *ngIf="signUpSuccess" class="btn-wrapper">
+		<button class="sigh-in-btn" (click)="signIn()">Sign In</button>
+		<button class="sigh-up-btn" (click)="signUp()">Sign Up</button>
+	</div>
+	<div *ngIf="!signUpSuccess" class="btn-wrapper">
+		<button class="add-post-btn" (click)="openModalAddPost()">Add post</button>
+		<button class="header-user-name"> {{ currentUser }} </button>
+		<button class="sigh-out-btn" (click)="signOut()">Sign Out</button>
+	</div>
+</header>
+
+<div class="cards-wrapper">
+	<ul>
+		<li class="card" *ngFor="let blog of blogs; index as i">
+			<div class="card-text">
+				<h2 > {{ blog.topic }} </h2>
+				<p>Posted by: {{ blog.postedBy }} </p>
+				<p > {{ blog.message }} </p>
+			</div>
+			<div class="card-date">
+				<i class="uil uil-clock"></i>
+				<span > {{ blog.date }} </span>
+				<div *ngIf="isAdmin || blog.postedBy === currentUser">
+					<button class="edit-btn" (click)="editBlog(i)">Edit</button>
+					<button class="delete-btn" (click)="deleteBlog(i)">Delete</button>
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>
+
+<!----------------------- Modal windows ----------------------->
+
+<div *ngIf="modalSignIn" class="modal-wrapper">
+	<div class="modal-sign-IN">
+		<div class="modal-title">
+			<p>Sign In</p>
+			<i class="uil uil-times-circle" (click)="closeModalSignIn()"></i>
+		</div>
+		<hr>
+		<div class="modal-inputs">
+			<span [ngStyle]="{'color': 'red'}"> {{ empty }} </span>
+			Email:
+			<input type="text" [(ngModel)]="submitEmail">
+			Password:
+			<input type="text" [(ngModel)]="submitPassword">
+		</div>
+		<hr>
+		<div class="modal-btns">
+			<button (click)="closeModalSignIn()">Close</button>
+			<button class="submit-btn" (click)="submitUser()">Submit</button>
+		</div>
+	</div>
+</div>
+
+<div *ngIf="modalAddPost" class="modal-wrapper">
+	<div class="modal-add-post">
+		<div class="modal-title">
+			<p> {{ addOrEdit }} </p>
+			<i class="uil uil-times-circle" (click)="closeModalAddPost()"></i>
+		</div>
+		<hr>
+		<div class="modal-inputs">
+			Title:
+			<input type="text" [(ngModel)]="topic">
+			Text:
+			<textarea name="" id="" cols="20" rows="7" [(ngModel)]="message"></textarea>
+		</div>
+		<hr>
+		<div class="modal-btns">
+			<button (click)="closeModalAddPost()">Close</button>
+			<button 
+				*ngIf="!editStatus" 
+				[disabled]="!topic || !message" 
+				(click)="addBlog()"
+				class="post-btn"
+			>Post</button>
+			<button 
+				*ngIf="editStatus" 
+				[disabled]="!topic || !message" 
+				(click)="saveBlog()"
+				class="save-btn"
+			>Save Post</button>
+		</div>
+	</div>
+</div>
+
+<div *ngIf="modalSignUp" class="modal-wrapper">
+	<div class="modal-sign-UP">
+		<div class="modal-title">
+			<p>Sign up</p>
+			<i class="uil uil-times-circle" (click)="closeModalSignUp()"></i>
+		</div>
+		<hr>
+		<div class="modal-inputs">
+			<span [ngStyle]="{'color': 'red'}"> {{ alertFields }} </span>
+			Username:
+			<input type="text" name="createUsername" [(ngModel)]="createUsername" required>
+			Email:
+			<input type="text" id="email" name="createEmail" [(ngModel)]="createEmail" required>
+			<span [ngStyle]="{'color': 'red'}"> {{ alertEmail }} </span>
+			Password:
+			<input type="text" name="createPassword" [(ngModel)]="createPassword" required>
+		</div>
+		<hr>
+		<div class="modal-btns">
+			<button type="button" (click)="closeModalSignUp()">Close</button>
+			<button type="button" class="post-btn" (click)="createUser()">Submit</button>
+		</div>
+	</div>
+</div>

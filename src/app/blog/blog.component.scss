@@ -1,0 +1,239 @@
+
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+header {
+	width: 100%;
+	height: 70px;
+	background-color: #595959;
+	display: flex;
+	justify-content: space-between;
+}
+
+input,
+textarea {
+	padding-left: 10px;
+}
+
+textarea {
+	padding-top: 10px;
+}
+
+input:focus,
+textarea:focus {
+    outline: 3.5px solid rgba(89, 172, 255, 0.558);
+    border: 1.5px solid rgb(27, 107, 187) !important;
+}
+
+// ---------------------------------------- buttons
+
+header button {
+	font-size: 15px;
+	padding: 12px 16px;
+	background-color: inherit;
+}
+
+.btn-wrapper {
+	margin-right: 25px;
+	margin-top: 16px;
+}
+
+.sigh-in-btn,
+.add-post-btn {
+	border: 2px solid rgb(50, 238, 50);
+	color: rgb(50, 238, 50);
+	border-radius: 5px;
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-right: none;
+}
+
+.sigh-up-btn {
+	border: 2.1px solid rgb(114, 114, 252);
+	color: rgb(114, 114, 252);
+	border-radius: 5px;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.modal-btns button {
+	padding: 12px 16px;
+	border-radius: 5px;
+	border: none;
+	background-color: #696969;
+	color: white;
+	font-size: 16px;
+}
+
+.modal-btns .post-btn,
+.modal-btns .save-btn,
+.modal-btns .submit-btn
+{
+	background-color: rgb(0, 177, 0);
+}
+
+header .header-user-name {
+	background-color: #ddaf17;
+	color: #000;
+	border: none;
+	height: 45px;
+}
+
+.sigh-out-btn {
+	color: #ddaf17;
+	border-radius: 5px;
+	border: 2px solid #ddaf17;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	border-left: none;
+}
+
+.edit-btn,
+.delete-btn {
+	font-size: 15px;
+	padding: 6px 8px;
+	border-radius: 5px;
+}
+
+.edit-btn {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	background-color: #ddaf17;
+	color: #000;
+	border: 2px solid #ddaf17 ;
+}
+
+.delete-btn {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	border-left: none;
+	background-color: rgb(202, 0, 0);
+	border: 2px solid rgb(202, 0, 0) ;
+	color: #fff;
+}
+
+// ---------------------------------------- cards
+
+h1 {
+	line-height: 70px;
+	padding-left: 20px;
+	color: white;
+	font-weight: normal;
+}
+
+.cards-wrapper {
+	max-width: 1200px;
+	margin: 20px auto;
+}
+
+.card {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+	padding: 20px 25px;
+	border: 2px solid rgb(183, 187, 192);
+	border-radius: 5px;
+	margin-bottom: 10px;
+}
+
+.card-text {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.card p:nth-child(2) {
+	color: rgb(118, 117, 117);
+	font-weight: bold;
+}
+
+.card-date {
+	line-height: 60px;
+	color: rgb(118, 117, 117);
+}
+
+// ---------------------------------------- modal windows
+
+.modal-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.603);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	font-family: inherit;
+}
+
+.modal-sign-IN,
+.modal-sign-UP,
+.modal-add-post {
+	width: 550px;
+	height: 390px;
+	border: 2px solid rgb(183, 187, 192);
+	border-radius: 5px;
+	background-color: #fff;
+	font-size: 16px;
+	animation: 0.5s forwards fadeInDown;
+}
+
+.modal-add-post {
+	height: 440px;
+}
+
+.modal-add-post textarea {
+	border: 2px solid rgb(183, 187, 192);
+	border-radius: 5px;
+}
+
+.modal-sign-UP {
+	height: 520px;
+	font-size: 18px;
+}
+
+.modal-title {
+	padding: 18px;
+	display: flex;
+	justify-content: space-between;
+	font-size: 26px;
+}
+
+.modal-inputs {
+	padding: 30px 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.modal-inputs input {
+	height: 36px;
+	border: 2px solid rgb(183, 187, 192);
+	border-radius: 5px;
+}
+
+.modal-btns {
+	padding: 16px;
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+}
+
+@keyframes fadeInDown { 
+    0% {                
+        opacity: 0;
+        transform: translate3d(0px, -100%, 0px);
+    }
+    100% {              
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.uil-times-circle {
+	color: rgb(119, 119, 119);
+}
