@@ -22,12 +22,18 @@ export class BlogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getUsersAndBlogs();
+    this.getUsers();
+    this.getBlogs();
   }
 
-  getUsersAndBlogs(): void {
+  getUsers(): void {
     this.users = this.adminService.getUsers();
-    this.blogs = this.adminService.getBlogs();
+  }
+
+  getBlogs(): void {
+    this.adminService.getAll().subscribe(data => {
+      this.blogs = data;
+    })
   }
 
   createUsername!: string;
@@ -85,10 +91,7 @@ export class BlogComponent implements OnInit {
     this.alertEmail = ''
     const user = { id: 1, name: this.createUsername, email: this.createEmail, password: this.createPassword };
     this.currentUser = user.name
-    console.log(user.name);
-    console.log(this.currentUser);
-    
-
+  
     if (this.createUsername && this.createEmail && this.createPassword) {
       const storedUsers = localStorage.getItem('users');
       if (storedUsers !== null) {
@@ -129,10 +132,6 @@ submitUser():void {
     for(const arr of parsedUsers) {
       if (arr.email === this.submitEmail && arr.password === this.submitPassword) {
         if (arr.email == this.adminEmail && arr.password == this.adminPass) {
-          console.log(arr.email);
-          console.log(this.adminEmail);
-          console.log(arr.password);
-          console.log(this.adminPass);
           this.isAdmin = true
         }
         else {
@@ -153,7 +152,6 @@ submitUser():void {
   if (!isMatch) {
     this.empty = 'Incorrect email or password'    
   }
-
 }
 
 openModalAddPost(): void {
@@ -167,24 +165,40 @@ closeModalAddPost(): void {
   this.message = ''
 }
 
+// addBlog(): void {
+//   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
+//   const newBlog = {
+//     id: 1,
+//     postedBy: this.currentUser,
+//     topic: this.topic,
+//     date: currentDate,
+//     message: this.message,
+//   };
+//   if (this.blogs.length > 0) {
+//     const id = this.blogs.slice(-1)[0].id;
+//     newBlog.id = id + 1;
+//   }
+//   this.adminService.addBlog(newBlog);
+//   this.closeModalAddPost()
+//   this.topic = ''
+//   this.message = ''
+//   this.editStatus = false
+// }
+
 addBlog(): void {
   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
   const newBlog = {
-    id: 1,
     postedBy: this.currentUser,
     topic: this.topic,
     date: currentDate,
     message: this.message,
   };
-  if (this.blogs.length > 0) {
-    const id = this.blogs.slice(-1)[0].id;
-    newBlog.id = id + 1;
-  }
-  this.adminService.addBlog(newBlog);
+
+  this.adminService.create(newBlog).subscribe(() => {
+    this.getBlogs();
+    this.resetForm()
+  })
   this.closeModalAddPost()
-  this.topic = ''
-  this.message = ''
-  // this.userBtns = true  
   this.editStatus = false
 }
 
@@ -197,6 +211,23 @@ editBlog(index: number): void {
   this.addOrEdit = 'Edit post'
 }
 
+// saveBlog():void {
+//   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
+//   const updateBlog = {
+//     id: this.editID,
+//     postedBy: this.currentUser,
+//     topic: this.topic,
+//     date: currentDate,
+//     message: this.message,
+//   };
+//   this.adminService.updateBlog(this.editIndex, this.topic, this.message);
+//   this.topic = ''
+//   this.message = ''
+//   this.editStatus = false
+//   this.modalAddPost = false
+//   this.addOrEdit = 'Add post'
+// }
+
 saveBlog():void {
   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
   const updateBlog = {
@@ -206,19 +237,32 @@ saveBlog():void {
     date: currentDate,
     message: this.message,
   };
-  this.adminService.updateBlog(this.editIndex, this.topic, this.message);
-  this.topic = ''
-  this.message = ''
-  this.editStatus = false
+  const id = this.blogs[this.editIndex].id;
+  this.adminService.update(updateBlog, id).subscribe(() => {
+    this.getBlogs()   
+    this.resetForm()
+    this.editStatus = false   
+  })
   this.modalAddPost = false
   this.addOrEdit = 'Add post'
 }
 
+// deleteBlog(index: number): void {
+//   this.adminService.deleteBlog(index);
+// }
+
 deleteBlog(index: number): void {
-  this.adminService.deleteBlog(index);
+  const blog = this.blogs[index];
+  const id = blog.id;
+  this.adminService.delete(id).subscribe(() => {
+    this.getBlogs()      
+  })
 }
 
-
+resetForm(): void {
+  this.topic = ''
+  this.message = ''  
+}
 
 
 
@@ -244,4 +288,15 @@ export interface IBlog {
   topic: string,
   date: string | number,
   message: string,
+}
+
+export interface IBlogRequest {
+  postedBy: string,
+  topic: string,
+  date: string | number,
+  message: string,
+}
+
+export interface IBlogResponse extends IBlogRequest{
+  id: number
 }

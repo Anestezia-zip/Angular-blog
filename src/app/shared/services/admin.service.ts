@@ -1,5 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IBlog, IUser } from 'src/app/blog/blog.component';
+import { Observable } from 'rxjs';
+import { IBlog, IBlogRequest, IBlogResponse, IUser } from 'src/app/blog/blog.component';
+import { environment } from 'src/environments/environment.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -7,37 +10,32 @@ import { IBlog, IUser } from 'src/app/blog/blog.component';
 export class AdminService {
 
   private users: Array<IUser> = []
-  private blogs: Array<IBlog> = [
-    {
-      id:1,
-      postedBy: 'admin',
-      topic: 'First post',
-      date: '10:00, 26.03.2023',
-      message: 'Sign up to create your account and start to use Angular blog',
-    }
-  ]
 
+  private url = environment.BACKEND_URL;
+  private api = { blogs: `${this.url}/blogs` }
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   getUsers(): Array<IUser> {
     return this.users;
   }
-  getBlogs(): Array<IBlog> {
-    return this.blogs;
+
+  getAll(): Observable<IBlogResponse[]> {
+    return this.http.get<IBlogResponse[]>(this.api.blogs);
   }
 
-  addBlog(blog: IBlog): void {
-    this.blogs.push(blog)
+  create(blog: IBlogRequest): Observable<IBlogResponse> {
+    return this.http.post<IBlogResponse>(this.api.blogs, blog);
   }
 
-  updateBlog(index: number, topic: string, message: string): void {
-    this.blogs[index].topic = topic;
-    this.blogs[index].message = message;
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.api.blogs}/${id}`);
   }
-  
-  deleteBlog(index: number): void {
-    this.blogs.splice(index, 1);
-  }  
+
+  update(blog: IBlogRequest, id: number): Observable<IBlogResponse> {
+    return this.http.patch<IBlogResponse>(`${this.api.blogs}/${id}`, blog);
+  }
   
 }

@@ -1,0 +1,11 @@
+{
+  "blogs": [
+    {
+      "id": 1,
+      "postedBy": "admin",
+      "topic": "First post",
+      "date": "10:00, 26.03.2023",
+      "message": "Sign up to create your account and start to use Angular blog"
+    }
+  ]
+}
