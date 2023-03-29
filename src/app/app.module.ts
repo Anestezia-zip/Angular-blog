@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { LocalStorageService } from 'ngx-webstorage';
 import { FormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http';	
 
@@ -19,7 +18,7 @@ import { BlogComponent } from './blog/blog.component';
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [LocalStorageService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

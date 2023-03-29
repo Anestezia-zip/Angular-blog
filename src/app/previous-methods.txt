@@ -1,0 +1,40 @@
+// addBlog(): void {
+//   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
+//   const newBlog = {
+//     id: 1,
+//     postedBy: this.currentUser,
+//     topic: this.topic,
+//     date: currentDate,
+//     message: this.message,
+//   };
+//   if (this.blogs.length > 0) {
+//     const id = this.blogs.slice(-1)[0].id;
+//     newBlog.id = id + 1;
+//   }
+//   this.adminService.addBlog(newBlog);
+//   this.closeModalAddPost()
+//   this.topic = ''
+//   this.message = ''
+//   this.editStatus = false
+// }
+
+// saveBlog():void {
+//   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
+//   const updateBlog = {
+//     id: this.editID,
+//     postedBy: this.currentUser,
+//     topic: this.topic,
+//     date: currentDate,
+//     message: this.message,
+//   };
+//   this.adminService.updateBlog(this.editIndex, this.topic, this.message);
+//   this.topic = ''
+//   this.message = ''
+//   this.editStatus = false
+//   this.modalAddPost = false
+//   this.addOrEdit = 'Add post'
+// }
+
+// deleteBlog(index: number): void {
+//   this.adminService.deleteBlog(index);
+// }

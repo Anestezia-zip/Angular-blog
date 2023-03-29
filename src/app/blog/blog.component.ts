@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from '../shared/services/admin.service';
-import { LocalStorageService } from 'ngx-webstorage';
-
 
 @Component({
   selector: 'app-blog',
@@ -15,26 +13,6 @@ export class BlogComponent implements OnInit {
 
   public topic!: string;
   public message!: string;
-
-
-  constructor(
-    private adminService: AdminService,
-  ) {}
-
-  ngOnInit(): void {
-    this.getUsers();
-    this.getBlogs();
-  }
-
-  getUsers(): void {
-    this.users = this.adminService.getUsers();
-  }
-
-  getBlogs(): void {
-    this.adminService.getAll().subscribe(data => {
-      this.blogs = data;
-    })
-  }
 
   createUsername!: string;
   createEmail!: string;
@@ -60,6 +38,25 @@ export class BlogComponent implements OnInit {
   adminEmail = 'admin'
   adminPass = '1234'
 
+  constructor(
+    private adminService: AdminService,
+  ) {}
+
+  ngOnInit(): void {
+    this.getUsers();
+    this.getBlogs();
+  }
+
+  getUsers(): void {
+    this.users = this.adminService.getUsers();
+  }
+
+  getBlogs(): void {
+    this.adminService.getAll().subscribe(data => {
+      this.blogs = data;
+    })
+  }
+
   signUp(): void {
     this.modalSignUp = true
     this.createEmail = ''
@@ -81,6 +78,7 @@ export class BlogComponent implements OnInit {
 
   closeModalSignUp(): void {
     this.modalSignUp = false
+    this.alertEmail = ''
   }
   closeModalSignIn(): void {
     this.modalSignIn = false
@@ -101,7 +99,7 @@ export class BlogComponent implements OnInit {
           this.users = parsedUsers;
         }
       }
-      if (!this.users.some(user => user.email.toLowerCase() === this.createEmail.toLowerCase())) {
+      if (!this.users.some(user => user.email.toLowerCase() === this.createEmail.toLowerCase() || user.name.toLowerCase() === this.createUsername.toLowerCase())) {
         const users = JSON.parse(localStorage.getItem('users') || '[]') as IUser[];
         const maxId = users.reduce((acc, cur) => cur.id > acc ? cur.id : acc, 0);
         user.id = maxId + 1;
@@ -112,9 +110,7 @@ export class BlogComponent implements OnInit {
         this.signUpSuccess = false
       }
       else {
-        const email = document.getElementById('email') as HTMLInputElement;
-        this.alertEmail = 'This email already exist'
-        email.style.border = '1px solid red';
+        this.alertEmail = 'This email or username already exist'
       }
 
     }
@@ -128,25 +124,24 @@ submitUser():void {
   }
   const storedUsers = localStorage.getItem('users');
   if (storedUsers !== null) {
-    const parsedUsers = JSON.parse(storedUsers);
-    for(const arr of parsedUsers) {
-      if (arr.email === this.submitEmail && arr.password === this.submitPassword) {
-        if (arr.email == this.adminEmail && arr.password == this.adminPass) {
-          this.isAdmin = true
+
+    const parsedUsers: IUser[] = JSON.parse(storedUsers);
+    parsedUsers.forEach((user: IUser) => {
+      if (user.email === this.submitEmail && user.password === this.submitPassword) {
+        if (user.email == this.adminEmail && user.password == this.adminPass) {
+          this.isAdmin = true;
+        } else {
+          this.isAdmin = false;
         }
-        else {
-          this.isAdmin = false
-        }
-        this.empty = ''
-        this.currentUser = arr.name
-        this.signUpSuccess = false
-        this.closeModalSignIn()
-        this.submitEmail = ''
-        this.submitPassword = ''
+        this.empty = '';
+        this.currentUser = user.name;
+        this.signUpSuccess = false;
+        this.closeModalSignIn();
+        this.submitEmail = '';
+        this.submitPassword = '';
         isMatch = true;
-        break;
       }
-    }
+    });
   }
 
   if (!isMatch) {
@@ -156,6 +151,7 @@ submitUser():void {
 
 openModalAddPost(): void {
   this.modalAddPost = true;
+  this.editStatus = false;
 }
 
 closeModalAddPost(): void {
@@ -164,26 +160,6 @@ closeModalAddPost(): void {
   this.topic = ''
   this.message = ''
 }
-
-// addBlog(): void {
-//   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
-//   const newBlog = {
-//     id: 1,
-//     postedBy: this.currentUser,
-//     topic: this.topic,
-//     date: currentDate,
-//     message: this.message,
-//   };
-//   if (this.blogs.length > 0) {
-//     const id = this.blogs.slice(-1)[0].id;
-//     newBlog.id = id + 1;
-//   }
-//   this.adminService.addBlog(newBlog);
-//   this.closeModalAddPost()
-//   this.topic = ''
-//   this.message = ''
-//   this.editStatus = false
-// }
 
 addBlog(): void {
   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
@@ -211,23 +187,6 @@ editBlog(index: number): void {
   this.addOrEdit = 'Edit post'
 }
 
-// saveBlog():void {
-//   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
-//   const updateBlog = {
-//     id: this.editID,
-//     postedBy: this.currentUser,
-//     topic: this.topic,
-//     date: currentDate,
-//     message: this.message,
-//   };
-//   this.adminService.updateBlog(this.editIndex, this.topic, this.message);
-//   this.topic = ''
-//   this.message = ''
-//   this.editStatus = false
-//   this.modalAddPost = false
-//   this.addOrEdit = 'Add post'
-// }
-
 saveBlog():void {
   const currentDate = new Date().toLocaleString('ru-RU', {hour: 'numeric', minute: 'numeric', day: 'numeric', month: 'numeric', year: 'numeric'});
   const updateBlog = {
@@ -247,10 +206,6 @@ saveBlog():void {
   this.addOrEdit = 'Add post'
 }
 
-// deleteBlog(index: number): void {
-//   this.adminService.deleteBlog(index);
-// }
-
 deleteBlog(index: number): void {
   const blog = this.blogs[index];
   const id = blog.id;
@@ -264,14 +219,7 @@ resetForm(): void {
   this.message = ''  
 }
 
-
-
 }
-
-
-
-
-
 
 
 

@@ -115,6 +115,10 @@ header .header-user-name {
 	color: #fff;
 }
 
+button[disabled] {
+    opacity: 0.5;
+}
+
 // ---------------------------------------- cards
 
 h1 {
